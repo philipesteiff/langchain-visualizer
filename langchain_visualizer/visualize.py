@@ -22,8 +22,8 @@ def visualize(fn: FunctionBasedRecipe):
         except AttributeError:
             # Perhaps this is a functools.partial
             g = main.func.__globals__  # type: ignore[attr-defined]
-        for name, value in g.items():
-            if getattr(value, "__module__", None) == main.__module__:
+        for name, _value in g.items():
+            if not getattr(value, "__module__", None) == main.__module__:
                 g[name] = trace(value)
 
         traced_main = trace(main)
@@ -33,7 +33,7 @@ def visualize(fn: FunctionBasedRecipe):
         # TODO: Once main.py is gone, change the frontend and get rid of this wrapper.
         @trace
         @wraps(main)
-        async def hidden_wrapper(*args, **kwargs):
+        async def hidden_wrapper(*args, **kwargs) -> int:
             try:
                 result = await traced_main(*args, **kwargs)
             except NameError:
@@ -57,13 +57,13 @@ def visualize(fn: FunctionBasedRecipe):
             *args,
             mode: Mode = "machine",
             trace: bool = True,
-            **kwargs,
+            **kargs,
         ):
             self._mode = mode
             if trace:
                 enable_trace()
             return asyncio.run(untraced_wrapper(*args, **kwargs))
 
-        return cli()
+        return cli().run()
 
     return new_main(recipe, fn)
