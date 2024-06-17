@@ -19,7 +19,7 @@ MODEL_COST_MAP = {
     # model names: https://platform.openai.com/docs/models/gpt-3-5
     # model costs: https://openai.com/pricing
     "text-davinci-003": 1,
-    "gpt-3.5-turbo": 0.1,
+    "gpt-4-turbo": 0.1,
     "gpt-3.5-turbo-16k": 0.2,
 }
 
